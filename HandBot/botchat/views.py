@@ -1,44 +1,63 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
+from django.shortcuts import render, reverse
+from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views import generic
-
-from .models import Choice, Question
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from .models import Choice, MessageText
+from django.template.context_processors import request
+from django.contrib.auth.password_validation import password_changed
 
 
 class IndexView(generic.ListView):
-    template_name = 'botchat/index.html'
-    context_object_name = 'latest_question_list'
+    
+    template_name = 'botchat/home.html'
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+    def get(self, request):
+        user = request.user
+        if(not user.is_anonymous):
+            return  HttpResponseRedirect(reverse('botchat:authPage'))
+        return render(request, self.template_name)
+    
+class HomeView(generic.ListView):
+    
+    template_name = 'botchat/mainPage.html'
 
+    def get(self, request):
+        user = request.user
+        if(not user.is_anonymous):
+            return  render(request, self.template_name)
+        return HttpResponseRedirect(reverse('botchat:home'))
 
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'botchat/detail.html'
+    def post(self, request):
+        if(request.POST.get('type', None) == 'log'):
+            username = request.POST.get('username', None)
+            password = request.POST.get('password', None)
+            if(User.objects.filter(username=username).exists()):
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return JsonResponse({'data': "success"})
+        elif(request.POST.get('type', None) == 'sign'):
+            firstName = request.POST.get('firstName', None)
+            lastName = request.POST.get('lastName', None)
+            email = request.POST.get('email', None)
+            username = request.POST.get('username', None)
+            password = request.POST.get('password', None)
+            if not (User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists()):
+                User.objects.create_user(username, email, password)
+                user = authenticate(username = username, password = password)
+                login(request, user)
+                return JsonResponse({'data': "success"})
+        return JsonResponse({'data': "failure"})
 
+class api(generic.ListView):
+    
+    def get(self, request):
+        s = request.GET.get('id', None)
+        p = request.GET.get('p', None)
+        print(s, p)
+        return JsonResponse({'data': "Hello"})
 
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'botchat/results.html'
-
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'botchat/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('botchat:results', args=(question.id,)))
+    def post(self, request):
+        print("AYA", request.POST.get('message', None))
+        return JsonResponse({'data': "Hello"})

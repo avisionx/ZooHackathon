@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('botchat/', include('botchat.urls')),
+    path('', include('botchat.urls')),
     path('admin/', admin.site.urls),
 ]
