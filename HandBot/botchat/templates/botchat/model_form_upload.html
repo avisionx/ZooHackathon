@@ -1,0 +1,19 @@
+{% extends 'botchat/base.html' %}
+{% load static %}
+{% block title %}ThiccPandas{% endblock %}
+{% block body %}
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+  </form>
+
+  <p><a href="{% url 'botchat:home' %}">Return to home</a></p>
+
+{% endblock %}
+
+{% block javaScripts %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}  

@@ -1,15 +1,69 @@
 {% extends 'botchat/base.html' %}
 {% load static %}
-{% block title %}Saviours{% endblock %}
+{% block title %}ThiccPandas{% endblock %}
 {% block body %}
-   
+	
+	<nav class="navbar navbar-expand navbar-dark bg-dark">
+	  <div class="container">
+		<a class="navbar-brand" href="#">ThiccPandas</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+		  <ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+			  <a class="nav-link" href="" onclick="logOut(event)">Logout</a>
+			</li>
+		  </ul>
+		</div>
+	  </div>
+	</nav>
 
+ 	<form method="post" enctype="multipart/form-data">
+    	{% csrf_token %}
+    	<input type="file" name="files">
+    	<input type="float" name="asl" placeholder="Longitude">
+    	<input type="float" name="asl" placeholder="Latitude">
+    	<button type="submit" onclick="uploadData(event)">Upload</button>
+  	</form>
 
 {% endblock %}
 
 {% block javaScripts %}
 <script type="text/javascript">
 
+$(document).ready(function(){
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+});
+
+function showPosition(position) {
+    s = "Latitude: " + position.coords.latitude + 
+    "Longitude: " + position.coords.longitude;
+    console.log(s);
+}
+
+function logOut(event){
+	$.ajax({  
+		url: '',  
+		method: 'POST',
+		data: {
+			'type': "logout",
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+		},  
+		success: function(data) {  
+			if(data['data'] == 'logout'){
+				document.location.reload();
+			}
+			else if(data['data'] == 'successUpload'){
+				console.log("asufh");
+			}
+		}  
+	});
+}
 	
 </script>
 {% endblock %}  
