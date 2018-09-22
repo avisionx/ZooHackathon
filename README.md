@@ -1,1 +1,2 @@
-# ZooHackathon
+# HandWritingBot
+Simple Handwriting Detection Bot.
