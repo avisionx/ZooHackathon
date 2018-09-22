@@ -3,9 +3,7 @@ from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirec
 from django.views import generic
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from .models import Choice, MessageText
 from django.template.context_processors import request
-from django.contrib.auth.password_validation import password_changed
 
 
 class IndexView(generic.ListView):
