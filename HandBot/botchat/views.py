@@ -7,6 +7,7 @@ from django.template.context_processors import request
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from .models import Document
+from MySQLdb.compat import long
 
 class IndexView(generic.ListView):
     
@@ -51,14 +52,24 @@ class HomeView(generic.ListView):
         return HttpResponseRedirect(reverse('botchat:home'))
     
     def post(self, request):
+        print(request.POST)
         if(request.POST.get('type', None) == 'logout'):
             logout(request)
             return JsonResponse({'data': 'logout'})
-        elif(request.FILES['files']):
-            file = request.FILES['files']
-            doc = Document.objects.create(document = file, longitude = 0, latitude = 0)
-            doc.save()   
-            return JsonResponse({'data': 'successUpload'})
+        elif(request.POST.get('type', None) == 'uploadData'):
+            file = request.POST.get('files', None)
+            if(file != ''):
+                longitude = request.POST.get('longitude', -1)
+                latitude = request.POST.get('latitude', -1)
+                print(longitude, latitude)
+                if(longitude != -1):
+                    doc = Document.objects.create(document = file, longitude = longitude, latitude = latitude)
+                    doc.save()   
+                    return JsonResponse({'data': 'successUpload'})
+                else:
+                    JsonResponse({'data': 'reset'})
+            else:
+                JsonResponse({'data': 'reset'})
         return JsonResponse({'data': 'working'})
     
 

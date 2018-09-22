@@ -19,31 +19,56 @@
 	  </div>
 	</nav>
 
- 	<form method="post" enctype="multipart/form-data">
-    	{% csrf_token %}
-    	<input type="file" name="files">
-    	<input type="float" name="asl" placeholder="Longitude">
-    	<input type="float" name="asl" placeholder="Latitude">
-    	<button type="submit" onclick="uploadData(event)">Upload</button>
+ 	<form role="form" enctype="multipart/form-data">
+    	<input type="file" name="files" id="files">
+    	<button class="btn btn-secondary" type="submit" onclick="uploadData(event)">Upload</button>
   	</form>
 
 {% endblock %}
 
 {% block javaScripts %}
 <script type="text/javascript">
+var longitude = -1;
+var latitude = -1;
 
-$(document).ready(function(){
-	if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else { 
-        x.innerHTML = "Geolocation is not supported by this browser.";
-    }
-});
+function Loctaion(position){
+	longitude = position.coords.longitude;
+	latitude = position.coords.latitude;
+}
 
-function showPosition(position) {
-    s = "Latitude: " + position.coords.latitude + 
-    "Longitude: " + position.coords.longitude;
-    console.log(s);
+function locationFinder() {
+	longitude = -1;
+	latitude = -1;
+	if(navigator.geolocation){
+		navigator.geolocation.getCurrentPosition(Location);
+	}
+}
+
+function uploadData(event){
+	event.preventDefault();
+	data = {
+		'type': 'uploadData',
+		'files': $("#files").val(),
+		'longitude': longitude,
+		'latitude': latitude,
+		csrfmiddlewaretoken: '{{ csrf_token }}'
+	}
+	$.ajax({  
+		url: '',  
+		method: 'POST',
+		data: data,  
+		beforeSend: function(){
+			locationFinder();
+		},
+		success: function(data) {  
+			if(data['data'] == 'successUpload'){
+				console.log("success");
+			}
+			else{
+				console.log("reset");
+			}
+		}  
+	});
 }
 
 function logOut(event){
@@ -57,9 +82,6 @@ function logOut(event){
 		success: function(data) {  
 			if(data['data'] == 'logout'){
 				document.location.reload();
-			}
-			else if(data['data'] == 'successUpload'){
-				console.log("asufh");
 			}
 		}  
 	});
