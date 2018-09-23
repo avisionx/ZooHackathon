@@ -6,8 +6,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.template.context_processors import request
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from .models import Document
+from .models import Document, Animal
 from MySQLdb.compat import long
+from django.contrib.sites import requests
+from .orb import *
+from .fmatch import *
 
 class IndexView(generic.ListView):
     
@@ -52,12 +55,39 @@ class HomeView(generic.ListView):
         return HttpResponseRedirect(reverse('botchat:home'))
     
     def post(self, request):
-        print(request.POST)
         if(request.POST.get('type', None) == 'logout'):
             logout(request)
             return JsonResponse({'data': 'logout'})
         elif(request.POST.get('checker', '') != ''):
             return HttpResponseRedirect(reverse("botchat:authPage"))
+        elif(request.POST.get('imageSearch', '') != ''):
+            
+            images_path = '../media/animals/'
+            files = []
+            for p in Animal.objects.all():
+                files.append(p.image)
+            print(files)
+#             files = [os.path.join(images_path, p) for p in sorted(os.listdir(images_path))]
+            # getting 3 random images 
+            # sample = random.sample(files, 5)
+            sample = files
+            batch_extractor(images_path)
+            
+# 
+            ma = Matcher('features.pck')
+# 
+            s = request.FILES['image']
+            
+            for s in sample:
+                names, match = ma.match(s, topn=5)
+    #        
+                for i in range(5):
+#             # we got cosine distance, less cosine distance between vectors
+#             # more they similar, thus we subtruct it from 1 to get match value
+                    print(names[i])
+                    print ('Match %s' % (1-match[i]))
+#             show_img(os.path.join(images_path, names[i]))
+
         elif(request.FILES['files']):
             file = request.FILES['files']
             longitude = request.POST.get('longitude', -1)

@@ -31,6 +31,17 @@
 		<button type="button" class="close p-2 float-left" aria-label="Close" onclick="closeTab(this)">
   			<span aria-hidden="true" style="font-size: 2rem"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span>
 		</button>
+		<div class="pt-5 px-5">
+			<form method="POST" enctype="multipart/form-data" >
+				{% csrf_token %}	
+				<div class="form-group">
+					<input type="file" class="form-control" aria-describedby="emailHelp" name="image">
+					<small id="emailHelp" class="form-text text-muted">Upload your image.</small>
+				</div>
+				<input type="text" name="imageSearch" class="d-none" value="1">
+				<button type="submit" class="btn btn-secondary">Upload</button>
+			</form>
+	  	</div>
 	</div>
 
 	<div id="panel2" class="fade d-none">
@@ -39,14 +50,14 @@
 		</button>
 		<div class="pt-5 px-5">
 			<form method="POST" enctype="multipart/form-data" >
-					{% csrf_token %}	
-					<div class="form-group">
+				{% csrf_token %}	
+				<div class="form-group">
 					<input type="file" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"  name="files">
 					<small id="emailHelp" class="form-text text-muted">Upload your file(pdf, excel, csv, xls, video, image, documents).</small>
-					</div>
-					<input type="text" name="longitude" class="d-none" id="long">
-	    		<input type="text" name="latitude" class="d-none" id="lat">
-					<button type="submit" class="btn btn-secondary">Upload</button>
+				</div>
+				<input type="text" name="longitude" class="d-none" id="long">
+    			<input type="text" name="latitude" class="d-none" id="lat">
+				<button type="submit" class="btn btn-secondary">Upload</button>
 			</form>
 	  	</div>
 	</div>

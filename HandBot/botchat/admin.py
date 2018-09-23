@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import *
 
 class AnimalAdmin(admin.ModelAdmin):
-    list_display = ('name', 'owner', 'date', 'longitude', 'latitude')
+    list_display = ('name', 'owner', 'date')
 
 admin.site.register(Animal, AnimalAdmin)
 
