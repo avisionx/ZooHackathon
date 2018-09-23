@@ -12,6 +12,6 @@ class OwnerAdmin(admin.ModelAdmin):
 admin.site.register(Owner, OwnerAdmin)
 
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('document', 'longitude', 'latitude','uploaded_at')
+    list_display = ('document', 'uploaded_at')
 
 admin.site.register(Document, DocumentAdmin)

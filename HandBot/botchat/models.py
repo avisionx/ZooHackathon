@@ -27,7 +27,6 @@ class Animal(models.Model):
     domain = models.CharField(max_length=100)
     kingdom = models.CharField(max_length=100)
     phylum = models.CharField(max_length=100)
-    t_class =models.CharField(max_length=100)
     order = models.CharField(max_length=100)
     family = models.CharField(max_length=100)
     genus = models.CharField(max_length=100)
