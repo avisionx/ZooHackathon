@@ -1,16 +1,284 @@
 {% extends 'botchat/base.html' %}
 {% load static %}
-{% block title %}Saviours{% endblock %}
+{% block title %}ThiccPandas{% endblock %}
 {% block body %}
-    
+	
+	<nav class="navbar navbar-expand navbar-dark bg-dark shadow-sm">
+	  <div class="container">
+		<a class="navbar-brand" href="#">ThiccPandas</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+		  <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+		  <ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+			  <a class="nav-link" href="" onclick="logOut(event)">Logout</a>
+			</li>
+		  </ul>
+		</div>
+	  </div>
+	</nav>
 
+	<div id="panel0" class="fade d-none">
+		<button type="button" class="close p-2 float-left" aria-label="Close" onclick="closeTab(this)">
+  			<span aria-hidden="true" style="font-size: 2rem"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span>
+		</button>
+
+
+	</div>
+
+	<div id="panel1" class="fade d-none">
+		<button type="button" class="close p-2 float-left" aria-label="Close" onclick="closeTab(this)">
+  			<span aria-hidden="true" style="font-size: 2rem"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span>
+		</button>
+	</div>
+
+	<div id="panel2" class="fade d-none">
+		<button type="button" class="close p-2 float-left" aria-label="Close" onclick="closeTab(this)">
+  			<span aria-hidden="true" style="font-size: 2rem"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span>
+		</button>
+		<div class="pt-5 px-5">
+			<form method="POST" enctype="multipart/form-data" >
+					{% csrf_token %}	
+					<div class="form-group">
+					<input type="file" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"  name="files">
+					<small id="emailHelp" class="form-text text-muted">Upload your file(pdf, excel, csv, xls, video, image, documents).</small>
+					</div>
+					<input type="text" name="longitude" class="d-none" id="long">
+	    		<input type="text" name="latitude" class="d-none" id="lat">
+					<button type="submit" class="btn btn-secondary">Upload</button>
+			</form>
+	  	</div>
+	</div>
+
+	<div id="panel3" class="fade d-none">
+		<button type="button" class="close p-2 float-left" aria-label="Close" onclick="closeTab(this)">
+  			<span aria-hidden="true" style="font-size: 2rem"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></span>
+		</button>
+		<div class="pt-5 px-5">			
+			<form method="POST">
+				{% csrf_token %}	
+	  			<div class="form-group">
+	    			<label for="exampleInputEmail1">Email address</label>
+	    			<input type="email" name="checker" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+					<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+				</div>
+				<div class="form-group">
+					<label for="exampleInputPassword1">Name</label>
+				    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Name">
+				    <small id="emailHelp" class="form-text text-muted">Full Name</small>
+				</div>
+				<div class="form-group">
+    				<label for="exampleFormControlTextarea1">Message</label>
+    				<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+				    <small id="emailHelp" class="form-text text-muted">Describe the situation briefly(150-200 words).</small>
+  				</div>
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="container align-items-center justify-content-center fade show" id="tabs">
+		<div class="row justify-content-center my-5">
+			<div class="p-2 col-12 col-lg-3 align-items-center text-center shadow hover-an p-3 py-5 justify-content-center d-flex rounded btn" id="tab0">
+				<div class="d-block">
+					<h5 class="text-primary">Audio Search</h5>
+					<p>Identidy the animal on the<br> basis of sound.</p>	
+				</div>
+			</div>
+			<div class="col-1 p-0"></div>
+			<div class="p-2 col-12 col-lg-3 align-items-center text-center shadow hover-an p-3 py-5 justify-content-center d-flex rounded btn" id="tab1">
+				<div class="d-block">
+					<h5 class="text-primary">Find Similar</h5>
+					<p>
+						Search the existing database for<br> existing entries or matches.
+					</p>	
+				</div>
+			</div>
+			<div class="col-1 p-0"></div>
+			<div class="p-2 col-12 col-lg-3 align-items-center text-center shadow hover-an p-3 py-5 justify-content-center d-flex rounded btn" id="tab2">
+				<div class="d-block">
+					<h5 class="text-primary">Add Data</h5>
+					<p>
+						Add data to our data-base and<br> supplement in tracking<br> the animal footprint and<br> putting an end to unsupervised<br> trade.
+					</p>	
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-center my-5">
+			<div class="p-2 col-12 col-lg-3 align-items-center text-center shadow hover-an p-3 py-5 justify-content-center d-flex rounded btn" id="tab3">
+				<div class="d-block">
+					<h5 class="text-primary">Report Illicit Trade</h5>
+					<p>
+						Be our eyes and ears and<br> report any instance of<br> illicit trade or <br>ownership of any animal
+					</p>	
+				</div>	
+			</div>
+			<div class="col-1 p-0"></div>
+			<div class="p-2 col-12 col-lg-3 align-items-center text-center shadow hover-an py-5 justify-content-center d-flex rounded btn">
+				<div class="d-block">
+					<h2 class="text-primary"><i class="fa fa-plus" aria-hidden="true"></i></h2>
+					<p>
+						Comming Soon!
+					</p>	
+				</div>
+			</div>
+			<div class="col-1 p-0"></div>
+			<div class="p-2 col-12 col-lg-3 align-items-center text-center justify-content-center d-none d-lg-flex "></div>
+		</div>
+	</div>
+
+	<div class="card-body d-none">
+        <div class="table-responsive">
+       		<table class="table">
+            	<thead class=" text-dark">
+                	<th>
+                 		Name
+                    </th>
+                    <th>
+                    	Common Name
+                    </th>
+                    <th>
+						Domain
+                    </th>
+                    <th>
+						Location
+                    </th>
+                    <th class="text-right">
+						Date
+                  	</th>
+                    </thead>
+                <tbody id="searchDta">
+				                	
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 {% endblock %}
 
 {% block javaScripts %}
 <script type="text/javascript">
+var longitude = -1;
+var latitude = -1;
+
+function closeTab(e){
+	panel = $(e).parent().attr("id");
+	$("#tabs").addClass("show");
+	$("#"+panel).addClass("d-none");
+	$("#"+panel).removeClass("show");
+	$("#tabs").removeClass("d-none");	
+}
+
+$(document).ready(function(){
+	longitudeFinder(setterLong);
+	latitudeFinder(setterLat);
+	setterLong();
+	setterLat();
+
+	$("#tab0").click(function(){
+		$("#tabs").removeClass("show");
+		$("#panel0").addClass("show");
+		$("#tabs").addClass("d-none");
+		$("#panel0").removeClass("d-none");
+	});
+
+	$("#tab1").click(function(){
+		$("#tabs").removeClass("show");
+		$("#panel1").addClass("show");
+		$("#tabs").addClass("d-none");
+		$("#panel1").removeClass("d-none");
+	});
+
+	$("#tab2").click(function(){
+		$("#tabs").removeClass("show");
+		$("#panel2").addClass("show");
+		$("#tabs").addClass("d-none");
+		$("#panel2").removeClass("d-none");
+	});
+
+	$("#tab3").click(function(){
+		$("#tabs").removeClass("show");
+		$("#panel3").addClass("show");
+		$("#tabs").addClass("d-none");
+		$("#panel3").removeClass("d-none");
+	});
+
+});
+
+// <tr>
+//                         <td>
+//                           Dakota Rice
+//                         </td>
+//                         <td>
+//                           Niger
+//                         </td>
+//                         <td>
+//                           Oud-Turnhout
+//                         </td>
+//                         <td>
+//                           Oud-Turnhout
+//                         </td>
+//                         <td class="text-right">
+//                           $36,738
+//                         </td>
+//                       </tr>
 
 
+
+function setterLong() {
+	$("#long").val(longitude);
+}
+
+function setterLat(){
+	$("#lat").val(latitude);
+}
+
+function Longiude(position){
+	a = position.coords.longitude;
+	console.log(a);
+	return a;
+}
+
+function Latitude(position){
+	a = position.coords.latitude;
+	console.log(a);
+	return a;
+}
+
+function longitudeFinder(callback) {
+	longitude = -1;
+	if(navigator.geolocation){
+		longitude = navigator.geolocation.getCurrentPosition(Longiude);
+	}
+	callback();
+}
+
+
+function latitudeFinder(callback) {
+	latitude = -1;
+	if(navigator.geolocation){
+		latitude = navigator.geolocation.getCurrentPosition(Latitude);
+	}
+	callback();
+}
+
+
+function logOut(event){
+	$.ajax({  
+		url: '',  
+		method: 'POST',
+		data: {
+			'type': "logout",
+			csrfmiddlewaretoken: '{{ csrf_token }}'
+		},  
+		success: function(data) {  
+			if(data['data'] == 'logout'){
+				document.location.reload();
+			}
+		}  
+	});
+}
 	
 </script>
 {% endblock %}  

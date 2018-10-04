@@ -2,11 +2,12 @@ from django.shortcuts import render, reverse
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-from .models import Choice, MessageText
+from django.contrib.auth import authenticate, login, logout
 from django.template.context_processors import request
-from django.contrib.auth.password_validation import password_changed
-
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from .models import Document
+from MySQLdb.compat import long
 
 class IndexView(generic.ListView):
     
@@ -18,16 +19,6 @@ class IndexView(generic.ListView):
             return  HttpResponseRedirect(reverse('botchat:authPage'))
         return render(request, self.template_name)
     
-class HomeView(generic.ListView):
-    
-    template_name = 'botchat/mainPage.html'
-
-    def get(self, request):
-        user = request.user
-        if(not user.is_anonymous):
-            return  render(request, self.template_name)
-        return HttpResponseRedirect(reverse('botchat:home'))
-
     def post(self, request):
         if(request.POST.get('type', None) == 'log'):
             username = request.POST.get('username', None)
@@ -49,6 +40,36 @@ class HomeView(generic.ListView):
                 login(request, user)
                 return JsonResponse({'data': "success"})
         return JsonResponse({'data': "failure"})
+    
+class HomeView(generic.ListView):
+    
+    template_name = 'botchat/mainPage.html'
+
+    def get(self, request):
+        user = request.user
+        if(not user.is_anonymous):
+            return  render(request, self.template_name)
+        return HttpResponseRedirect(reverse('botchat:home'))
+    
+    def post(self, request):
+        print(request.POST)
+        if(request.POST.get('type', None) == 'logout'):
+            logout(request)
+            return JsonResponse({'data': 'logout'})
+        elif(request.POST.get('checker', '') != ''):
+            return HttpResponseRedirect(reverse("botchat:authPage"))
+        elif(request.FILES['files']):
+            file = request.FILES['files']
+            longitude = request.POST.get('longitude', -1)
+            latitude = request.POST.get('latitude', -1)   
+            if(longitude == ""):
+                longitude = -1
+                latitude = -1
+            doc = Document.objects.create(document = file, longitude = float(longitude), latitude = float(latitude))
+            doc.save()
+            return HttpResponseRedirect(reverse("botchat:authPage"))
+        return HttpResponseRedirect(reverse("botchat:authPage"))
+    
 
 class api(generic.ListView):
     

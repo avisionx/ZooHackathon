@@ -1,27 +1,43 @@
 from django.db import models
-from django.utils import timezone
 import datetime
 
-class MessageText(models.Model):
-    message_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-    def __str__(self):
-        return self.message_text
-    
-    def was_published_recently(self):
-        now = timezone.now()
-        return now - datetime.timedelta(days=1) <= self.pub_date <= now
-    
-    was_published_recently.admin_order_field = 'pub_date'
-    was_published_recently.boolean = True
-    was_published_recently.short_description = 'Published recently?'
-
-    
-class Choice(models.Model):
-    question = models.ForeignKey(MessageText, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+class Document(models.Model):
+    document = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    longitude = models.FloatField()
+    latitude = models.FloatField()
+    objects = models.Manager()
     
     def __str__(self):
-        return self.choice_text
+        return self.document.name
+    
+class Owner(models.Model):
+    
+    name = models.CharField(max_length=100)
+    contact = models.CharField(max_length=100)
+    address = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.name
+
+class Animal(models.Model):
+    
+    name = models.CharField(max_length=100)
+    common_name = models.CharField(max_length=100)
+    domain = models.CharField(max_length=100)
+    kingdom = models.CharField(max_length=100)
+    phylum = models.CharField(max_length=100)
+    order = models.CharField(max_length=100)
+    family = models.CharField(max_length=100)
+    genus = models.CharField(max_length=100)
+    species = models.CharField(max_length=100)
+    geographic_location = models.CharField(max_length=200)
+    date = models.DateTimeField('date published', auto_now_add=True)
+    longitude = models.FloatField()
+    latitude = models.FloatField()
+    owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.name + " " + self.owner.__str__()
+
+    
