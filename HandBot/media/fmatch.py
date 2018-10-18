@@ -138,12 +138,11 @@ def run():
     
     print ('Query image ==========================================')
     show_img(s)
-    names, match = ma.match(s, topn=5)
+    names, match = ma.match('./media/' + s, topn=5)
     print ('Result images ========================================')
     for i in range(3):
         # we got cosine distance, less cosine distance between vectors
         # more they similar, thus we subtruct it from 1 to get match value
         print ('Match %s' % (1-match[i]))
-        show_img(os.path.join(images_path, names[i]))
-
+        show_img('./animals/'+ names[i])
 run()

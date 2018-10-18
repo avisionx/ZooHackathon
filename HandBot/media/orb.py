@@ -4,21 +4,6 @@ import cv2
 import matplotlib.pyplot as plt
 import os
 
-dataset_path = 'test'
-img_building = cv2.imread(os.path.join(dataset_path, 'base.png'))
-img_building = cv2.cvtColor(img_building, cv2.COLOR_BGR2RGB)  # Convert from cv's BRG default color order to RGB
-
-orb = cv2.ORB_create()
-key_points, description = orb.detectAndCompute(img_building, None)
-img_building_keypoints = cv2.drawKeypoints(img_building, 
-										   key_points, 
-										   img_building, 
-										   flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS) # Draw circles.
-plt.figure(figsize=(16, 16))
-plt.title('ORB Interest Points')
-plt.imshow(img_building_keypoints)
-plt.show()
-
 def image_detect_and_compute(detector, img_name):
 	"""Detect and compute interest points and their descriptors."""
 	img = cv2.imread(os.path.join(dataset_path, img_name))
@@ -85,9 +70,3 @@ def draw_image_matches2(detector, img1_name, img2_name, nmatches=30):
 	plt.figure(figsize=(18, 18))
 	plt.imshow(img3); plt.show()
 	
-
-orb = cv2.ORB_create()
-draw_image_matches2(orb, 'base.png', 'duplicate.png')
-draw_image_matches2(orb, 'base.png', 'same.png')
-draw_image_matches2(orb, 'base.png', 'different.png')
-draw_image_matches2(orb, 'base.png', 'jag.png')
